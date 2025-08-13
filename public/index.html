@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Quiz Rápido: El Duelo de Conocimiento</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>🧠 Quiz Rápido: El Duelo de Conocimiento</h1>
+    <p id="yo" class="yo"></p>
+
+    <!-- Panel docente (solo visible si el nombre es "docente") -->
+    <section id="panel-docente" class="card oculto">
+      <h2>Vista del Docente</h2>
+      <form id="form-docente">
+        <label>Pregunta</label>
+        <input id="doc-pregunta" type="text" placeholder="¿Capital de Ecuador?" required />
+
+        <label>Respuesta correcta</label>
+        <input id="doc-respuesta" type="text" placeholder="Quito" required />
+
+        <button type="submit">📣 Publicar pregunta</button>
+      </form>
+
+      <button id="btn-reiniciar" class="secundario">🔄 Reiniciar ronda</button>
+      <small>Tip: publicar una nueva pregunta reinicia la ronda automáticamente.</small>
+    </section>
+
+    <!-- Panel común (todos lo ven) -->
+    <section class="card">
+      <h2>Pregunta en juego</h2>
+      <div id="pregunta" class="pregunta">Aún no hay pregunta publicada</div>
+      <div id="estado" class="estado">Ronda inactiva</div>
+    </section>
+
+    <!-- Panel estudiante -->
+    <section id="panel-estudiante" class="card">
+      <h2>Tu respuesta</h2>
+      <form id="form-respuesta">
+        <input id="mi-respuesta" type="text" placeholder="Escribe tu respuesta..." disabled />
+        <button id="btn-enviar" type="submit" disabled>Enviar</button>
+      </form>
+    </section>
+
+    <!-- Ganador -->
+    <section class="card ganador oculto" id="panel-ganador">
+      <h2>🏆 ¡Tenemos ganador/a!</h2>
+      <div id="ganador-msg"></div>
+    </section>
+  </div>
+
+  <!-- Socket.io cliente -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Tu lógica de frontend -->
+  <script src="./client.js"></script>
+</body>
+</html>
