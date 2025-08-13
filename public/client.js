@@ -1,7 +1,11 @@
-// client.js
+// public/client.js
+
+// Conexión con el servidor de sockets
 const socket = io();
 
-// --- DOM refs ---
+// -------------------------
+//        DOM Refs
+// -------------------------
 const yo = document.getElementById('yo');
 const panelDocente = document.getElementById('panel-docente');
 const formDocente = document.getElementById('form-docente');
@@ -20,16 +24,22 @@ const btnEnviar = document.getElementById('btn-enviar');
 const panelGanador = document.getElementById('panel-ganador');
 const ganadorMsg = document.getElementById('ganador-msg');
 
-// --- Nombre de usuario ---
+const btnLogout = document.getElementById('btn-logout');
+
+// -------------------------
+//   Nombre desde el login
+// -------------------------
 let nombre = localStorage.getItem('quiz_nombre');
-if (!nombre) {
-  nombre = prompt('Ingresa tu nombre (usa "docente" si eres profesor):') || 'Anónimo';
-  nombre = nombre.trim();
-  localStorage.setItem('quiz_nombre', nombre);
+if (!nombre || !nombre.trim()) {
+  // Si no hay nombre guardado, redirige al login
+  window.location.href = '/login.html';
 }
+nombre = nombre.trim();
+
+// Mostrar nombre en UI
 yo.textContent = `Conectado como: ${nombre}`;
 
-// Mostrar/ocultar panel del docente
+// ¿Es docente?
 const esDocente = nombre.toLowerCase() === 'docente';
 if (esDocente) {
   panelDocente.classList.remove('oculto');
@@ -37,9 +47,12 @@ if (esDocente) {
   panelDocente.classList.add('oculto');
 }
 
+// Informar al servidor quién soy
 socket.emit('usuario:conectado', nombre);
 
-// --- Helpers UI ---
+// -------------------------
+//       Helpers de UI
+// -------------------------
 function activarRondaUI(estaActiva) {
   if (estaActiva) {
     estadoBox.textContent = 'Ronda activa: ¡responde rápido!';
@@ -58,7 +71,9 @@ function limpiarRespuestaLocal() {
   miRespuesta.value = '';
 }
 
-// --- Eventos de servidor ---
+// -------------------------
+//   Eventos desde servidor
+// -------------------------
 socket.on('estado:sync', ({ pregunta, rondaActiva }) => {
   if (pregunta) {
     preguntaBox.textContent = pregunta;
@@ -90,30 +105,47 @@ socket.on('ronda:reiniciada', () => {
   limpiarRespuestaLocal();
 });
 
-// --- Docente: publicar pregunta ---
+// -------------------------
+//      Acciones Docente
+// -------------------------
 if (esDocente) {
-  formDocente.addEventListener('submit', (e) => {
+  formDocente?.addEventListener('submit', (e) => {
     e.preventDefault();
     const pregunta = docPregunta.value.trim();
     const respuesta = docRespuesta.value.trim();
     if (!pregunta || !respuesta) return;
+
+    // Enviar nueva pregunta (respuesta se guarda sólo en servidor)
     socket.emit('pregunta:nueva', { pregunta, respuesta });
+
+    // Limpiar campos
     docPregunta.value = '';
     docRespuesta.value = '';
   });
 
-  btnReiniciar.addEventListener('click', () => {
+  btnReiniciar?.addEventListener('click', () => {
     socket.emit('ronda:reiniciar');
   });
 }
 
-// --- Estudiante: enviar respuesta ---
+// -------------------------
+//     Acciones Estudiante
+// -------------------------
 formRespuesta.addEventListener('submit', (e) => {
   e.preventDefault();
   const r = miRespuesta.value.trim();
   if (!r) return;
-  // Enviar y deshabilitar para evitar spam local
+
+  // Enviar y bloquear para evitar spam local hasta que termine la ronda
   socket.emit('respuesta:enviada', r);
   miRespuesta.disabled = true;
   btnEnviar.disabled = true;
+});
+
+// -------------------------
+//     Cambiar de usuario
+// -------------------------
+btnLogout?.addEventListener('click', () => {
+  localStorage.removeItem('quiz_nombre');
+  window.location.href = '/login.html';
 });

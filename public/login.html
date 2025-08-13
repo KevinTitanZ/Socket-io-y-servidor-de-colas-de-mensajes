@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Ingresar | Quiz Rápido</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+  <style>
+    .login-wrap {
+      max-width: 460px; margin: 10vh auto; padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+    }
+    .hint { color: #9ca3af; font-size: .9rem; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <h1>🧠 Quiz Rápido</h1>
+    <p class="hint">Ingresa tu nombre. Usa <strong>docente</strong> si eres profesor/a.</p>
+
+    <form id="login-form">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" placeholder="Tu nombre o 'docente'" required />
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+
+  <script src="./login.js"></script>
+</body>
+</html>
